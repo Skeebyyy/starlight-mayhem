@@ -1583,7 +1583,9 @@ class PlayState extends MusicBeatState
 				rgb(1);
 				rgb(0);
 			}
-		super.create();
+		super.create(#if mobileC
+        addVirtualPad(FULL, A_B);
+        #end);
 	}
 
 	function checkanims() {
