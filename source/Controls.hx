@@ -472,7 +472,6 @@ class Controls extends FlxActionSet
 	}
 	
 	public function setVirtualPadUI(virtualPad:FlxVirtualPad, ?DPad:FlxDPadMode, ?Action:FlxActionMode) 
-	{
 		if (DPad == null)
 			DPad = NONE;
 		if (Action == null)
@@ -557,7 +556,7 @@ class Controls extends FlxActionSet
 				inline forEachBound(Control.BACK, (action, state) -> addbuttonuUI(action, virtualPad.buttonB, state));
 			case NONE:
 		}
-	
+	}
 	
 	public function removeFlxInput(Tinputs) {
 		for (action in this.digitalActions)
