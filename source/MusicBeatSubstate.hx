@@ -30,7 +30,7 @@ class MusicBeatSubstate extends FlxSubState
 	#if mobileC
 	var _virtualpad:FlxVirtualPad;
 
-	var trackedinputsUI:Array<FlxActionInput> = [];
+	var trackedinputs:Array<FlxActionInput> = [];
 	var trackedinputsNOTES:Array<FlxActionInput> = [];	
 
 	// adding virtualpad to state
@@ -39,8 +39,8 @@ class MusicBeatSubstate extends FlxSubState
 		_virtualpad.alpha = 0.75;
 		add(_virtualpad);
 		controls.setVirtualPadUI(_virtualpad, DPad, Action);
-		trackedinputsUI = controls.trackedinputsUI;
-		controls.trackedinputsUI = [];
+		trackedinputs = controls.trackedinputs;
+		controls.trackedinputs = [];
 	}
 	
 	override function destroy() {
