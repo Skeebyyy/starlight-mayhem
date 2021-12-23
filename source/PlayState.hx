@@ -222,7 +222,6 @@ class PlayState extends MusicBeatState
 
 	var botplaySine:Float = 0;
 	var botplayTxt:FlxText;
-	var daninnocentTxt:FlxText;
 
 	public var iconP1:HealthIcon;
 	public var iconP2:HealthIcon;
@@ -306,7 +305,8 @@ class PlayState extends MusicBeatState
 
 	private var luaArray:Array<FunkinLua> = [];
 
-	//Achievement shit
+	
+//Achievement shit
 	var keysPressed:Array<Bool> = [false, false, false, false];
 	var boyfriendIdleTime:Float = 0.0;
 	var boyfriendIdled:Bool = false;
@@ -318,12 +318,12 @@ class PlayState extends MusicBeatState
 	var songName:String = Paths.formatToSongPath(SONG.song);
 	var bursttimer:FlxTimer;
 	var doof2:Cutsceneshit;
-
-	#if mobileC
+	
+    #if mobileC
 	var mcontrols:Mobilecontrols; 
 	#end
-
-	override public function create()
+    
+    override public function create()
 	{
 		#if MODS_ALLOWED
 		Paths.destroyLoadedImages(resetSpriteCache);
@@ -1280,7 +1280,7 @@ class PlayState extends MusicBeatState
 		// startCountdown();
 
 		generateSong(SONG.song);
-		#if LUA_ALLOWED
+		#if (LUA_ALLOWED && MODS_ALLOWED)
 		for (notetype in noteTypeMap.keys()) {
 			var luaToLoad:String = Paths.modFolders('custom_notetypes/' + notetype + '.lua');
 			if(FileSystem.exists(luaToLoad)) {
@@ -1373,15 +1373,9 @@ class PlayState extends MusicBeatState
 		if(ClientPrefs.downScroll) {
 			botplayTxt.y = timeBarBG.y - 78;
 		}
-
-		daninnocentTxt = new FlxText(876, 648, 348);
-        daninnocentTxt.text = "PORTED BY DANINNOCENT";
-        daninnocentTxt.setFormat(Paths.font("vcr.ttf"), 30, FlxColor.WHITE, RIGHT, FlxTextBorderStyle.OUTLINE,FlxColor.BLACK);
-        daninnocentTxt.scrollFactor.set();
-        add(daninnocentTxt);
-
-
-		strumLineNotes.cameras = [camHUD];
+		
+		
+        strumLineNotes.cameras = [camHUD];
 		grpNoteSplashes.cameras = [camHUD];
 		notes.cameras = [camHUD];
 		notesburst.cameras = [camHUD];
@@ -1394,10 +1388,9 @@ class PlayState extends MusicBeatState
 		timeBar.cameras = [camHUD];
 		timeBarBG.cameras = [camHUD];
 		timeTxt.cameras = [camHUD];
-		daninnocentTxt.cameras = [camHUD];
 		doof.cameras = [camdia];
 		doof2.cameras = [camdia];
-
+		
 		#if mobileC
 		mcontrols = new Mobilecontrols();
 		switch (mcontrols.mode)
@@ -1902,8 +1895,8 @@ class PlayState extends MusicBeatState
 		mcontrols.visible = true;
 		#end
 
-		camHUD.visible = true;
-		if(startedCountdown) {
+        camHUD.visible = true;
+	    if(startedCountdown) {
 			callOnLuas('onStartCountdown', []);
 			return;
 		}
@@ -2281,11 +2274,7 @@ songSpeed = SONG.speed;
 
 		var songName:String = Paths.formatToSongPath(SONG.song);
 		var file:String = Paths.json(songName + '/events');
-		// #if sys
-		// if (FileSystem.exists(Paths.modsJson(songName + '/events')) || FileSystem.exists(file)) {
-		// #else
 		if (OpenFlAssets.exists(file)) {
-		// #end
 		}
 		if (songName == 'parallax' || songName =='coda' || songName == 'starstorm' || songName == 'focus')
 			{
@@ -4310,10 +4299,10 @@ songSpeed = SONG.speed;
 	var transitioning = false;
 	public function endSong():Void
 	{
-		#if mobileC
+	    #if mobileC
 		mcontrols.visible = false;
 		#end
-
+		
 		//Should kill you if you tried to cheat
 		if(!startingSong) {
 			notes.forEach(function(daNote:Note) {
@@ -4394,14 +4383,15 @@ songSpeed = SONG.speed;
 						{
 								FlxTransitionableState.skipNextTransIn = false;
 								FlxTransitionableState.skipNextTransOut = false;
-										var video:VideoPlayerD = new VideoPlayerD('final_cutscene');
-										video.finishCallback = function()
-										{
-											FlxG.sound.playMusic(Paths.music('freakyMenu'));
-											MusicBeatState.switchState(new StoryMenuState());
-											ClientPrefs.mainweek = true;
-											FlxG.save.data.beatenweek1 = true;
-										}
+										
+								var video:BrowserVideoPlayer = new BrowserVideoPlayer("final_cutscene");
+		                        (video).finishCallback = function() 
+		                        {
+									FlxG.sound.playMusic(Paths.music('freakyMenu'));
+									MusicBeatState.switchState(new StoryMenuState());
+									ClientPrefs.mainweek = true;
+									FlxG.save.data.beatenweek1 = true;
+								}
 						}
 						else
 						{
