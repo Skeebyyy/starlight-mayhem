@@ -478,6 +478,7 @@ class Controls extends FlxActionSet
 		if (Action == null)
 			Action = NONE;
 		}
+		
 		switch (DPad)
 		{
 			case UP_DOWN:
