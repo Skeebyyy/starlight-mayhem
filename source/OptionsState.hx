@@ -31,7 +31,7 @@ using StringTools;
 // TO DO: Redo the menu creation system for not being as dumb
 class OptionsState extends MusicBeatState
 {
-	var options:Array<String> = ['Notes', 'Controls', 'Mobile Controls', 'Preferences'];
+	var options:Array<String> = ['Notes', 'Controls', 'Preferences'];
 	private var grpOptions:FlxTypedGroup<FlxText>;
 	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
@@ -140,10 +140,9 @@ class OptionsState extends MusicBeatState
 		}
 		changeSelection();
 
-                #if mobileC
-		addVirtualPad(UP_DOWN, A_B);
+		#if mobileC
+		addVirtualPad(FULL, A_B);
 		#end
-
 
 		super.create();
 	}
@@ -152,7 +151,6 @@ class OptionsState extends MusicBeatState
 		super.closeSubState();
 		ClientPrefs.saveSettings();
 		changeSelection();
-		_virtualpad.alpha = 0.75;
 	}
 
 	override function update(elapsed:Float) {
@@ -176,17 +174,12 @@ class OptionsState extends MusicBeatState
 				item.alpha = 0;
 			}
 
-			 _virtualpad.alpha = 0;
-
 			switch(options[curSelected]) {
 				case 'Notes':
 					openSubState(new NotesSubstate());
 
 				case 'Controls':
 					openSubState(new ControlsSubstate());
-
-				case 'Mobile Controls':
-					MusicBeatState.switchState(new options.CustomControlsState());	
 
 				case 'Preferences':
 					openSubState(new PreferencesSubstate());
@@ -282,6 +275,10 @@ class NotesSubstate extends MusicBeatSubstate
 		hsvText = new Alphabet(0, 0, "Hue    Saturation  Brightness", false, false, 0, 0.65);
 		add(hsvText);
 		changeSelection();
+
+		#if mobileC
+		addVirtualPad(FULL, A_B);
+		#end
 	}
 
 	var changingNote:Bool = false;
@@ -388,6 +385,7 @@ class NotesSubstate extends MusicBeatSubstate
 		}
 
 		if (controls.BACK || (changingNote && controls.ACCEPT)) {
+			remove(_virtualpad);
 			changeSelection();
 			if(!changingNote) {
 				grpNumbers.forEachAlive(function(spr:Alphabet) {
@@ -594,6 +592,10 @@ class ControlsSubstate extends MusicBeatSubstate {
 			grptxt.add(text);
 		}
 		changeSelection();
+
+		#if mobileC
+		addVirtualPad(FULL, A_B);
+		#end
 	}
 
 	var leaving:Bool = false;
@@ -618,6 +620,7 @@ class ControlsSubstate extends MusicBeatSubstate {
 			}
 
 			if (controls.BACK) {
+				remove(_virtualpad);
 				ClientPrefs.keyBinds = controlMap.copy();
 				ClientPrefs.reloadControls();
 				grpOptions.forEachAlive(function(spr:Alphabet) {
@@ -984,6 +987,10 @@ class PreferencesSubstate extends MusicBeatSubstate
 		}
 		changeSelection();
 		reloadValues();
+
+		#if mobileC
+		addVirtualPad(FULL, A_B);
+		#end
 	}
 
 	var nextAccept:Int = 5;
@@ -1016,6 +1023,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 		}
 
 		if (controls.BACK) {
+			remove(_virtualpad);
 			grpOptions.forEachAlive(function(spr:Alphabet) {
 				spr.alpha = 0;
 			});
